@@ -23,6 +23,7 @@ export default function LoginPage() {
         <Image
           width={800}
           height={800}
+          unoptimized={true}
           src="/loginn.jfif"
           alt="Login Background"
           className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"

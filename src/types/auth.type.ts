@@ -6,3 +6,11 @@ export interface IRegistrationPayload {
         contactNumber?: string
     }
 }
+export interface ILoginPayload {
+    email: string
+    password: string
+}
+export interface IVerifyAccountPayload {
+    email: string
+    otp: string
+}

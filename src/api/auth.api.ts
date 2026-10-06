@@ -1,7 +1,7 @@
 import { apiClient } from "@/lib/apiClient"
-import { IRegistrationPayload } from "@/types"
+import { ILoginPayload, IRegistrationPayload, IVerifyAccountPayload } from "@/types"
 
-export const userLogin = (payload: { email: string, password: string }) => {
+export const userLogin = (payload: ILoginPayload) => {
     return apiClient("/auth/login", { method: "POST", body: payload })
 }
 export const userLogout = () => {
@@ -13,6 +13,10 @@ export const userRegistration = (payload: IRegistrationPayload) => {
 
 export const googleOAuth = (payload: { idToken: string }) => {
     return apiClient("/auth/google", { method: "POST", body: payload })
+}
+
+export const verifyAccount = (payload: IVerifyAccountPayload) => {
+    return apiClient("/auth/verify-email", { method: "POST", body: payload })
 }
 
 export const getMe = () => {
