@@ -14,17 +14,21 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from "../ui/input-otp";
 import { useEffect, useState } from "react";
 import { Field, FieldDescription, FieldError, FieldLabel } from "../ui/field";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
-import { useVerifyAccount } from "@/hooks";
+import { useVerifyAccount, useVerifyDoctorAccount } from "@/hooks";
 import { toast } from "../ui/toast";
+
 const RESEND_COOLDOWN = 90;
-const VerifyAccountForm = () => {
+const VerifyAccountForm = ({ mode }: { mode: "doctor" | "patient" }) => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [otp, setOtp] = useState("");
   const [isInvalid, setIsInvalid] = useState(false);
   const [resendTimer, setResendTimer] = useState(RESEND_COOLDOWN);
 
-  const { mutate: verify } = useVerifyAccount();
+  const { mutate: verifyPatient } = useVerifyAccount();
+  const { mutate: verifyDoctor } = useVerifyDoctorAccount();
+
+  const verify = mode === "doctor" ? verifyDoctor : verifyPatient;
 
   const email = searchParams.get("email");
 
@@ -53,9 +57,22 @@ const VerifyAccountForm = () => {
       email,
       otp,
     };
-    // console.log(verifyData);
+
     verify(verifyData, {
       onSuccess: () => {
+        if (mode === "doctor") {
+          toast.add({
+            title: "Account Verified Successfully",
+            description:
+              "An Admin will apporve your account. This may take time, please check your email in few days.",
+            type: "success",
+          });
+
+          router.push("/");
+
+          return;
+        }
+
         toast.add({
           title: "Account Verified Successfully",
           description: "Your account has beed verified",

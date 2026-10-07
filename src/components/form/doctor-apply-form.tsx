@@ -14,6 +14,7 @@ import Link from "next/link";
 import { Textarea } from "../ui/textarea";
 import { FileText, FileUp, Plus, X } from "lucide-react";
 import {
+  doctorApplicationSchema,
   isAcceptedFileSize,
   isAcceptedFileType,
   MAX_ADDITIONAL_FILES,
@@ -22,6 +23,8 @@ import {
 import { formatFileSize } from "@/utils";
 import { DoctorApplicationData } from "@/types";
 import { useApplyAsDoctor } from "@/hooks";
+import { toast } from "../ui/toast";
+import { Spinner } from "../ui/spinner";
 const DoctorApplyForm = () => {
   const router = useRouter();
 
@@ -29,22 +32,23 @@ const DoctorApplyForm = () => {
 
   const form = useForm({
     defaultValues: {
-      name: "Soheb",
+      name: "",
       email: "",
-      phone: "01797101644",
-      address: "Dhaka",
-      specialization: "Development",
-      licenseNumber: "A-123",
-      qualifications: "JAVASCRIPT",
-      experienceYears: "2",
-      consultationFee: "999",
-      bio: "I care about the code.",
+      phone: "",
+      address: "",
+      specialization: "",
+      licenseNumber: "",
+      qualifications: "",
+      experienceYears: "",
+      consultationFee: "",
+      bio: "",
       resume: null as File | null,
       additionalFiles: [] as File[],
     },
-    // validators: {
-    //   onSubmit: loginSchema,
-    // },
+
+    validators: {
+      onSubmit: doctorApplicationSchema,
+    },
     onSubmit: ({ value }) => {
       const doctorData: DoctorApplicationData = {
         user: {
@@ -65,7 +69,6 @@ const DoctorApplyForm = () => {
         },
       };
 
-      // console.log(doctorData);
       apply(
         {
           data: doctorData,
@@ -73,10 +76,24 @@ const DoctorApplyForm = () => {
           additionalFiles: value.additionalFiles,
         },
         {
-          onSuccess: (res) => {
-            console.log(res);
+          onSuccess: () => {
+            toast.add({
+              title: "Application Successful",
+              description: "Please verify your account",
+              type: "success",
+            });
+            const params = new URLSearchParams({
+              email: doctorData.user.email,
+            });
+            router.push(`/apply/verify-account?${params.toString()}`);
           },
-          onError: () => {},
+          onError: (err) => {
+            toast.add({
+              title: "Authorization Failure",
+              description: err.message || "Something went wrong!",
+              type: "error",
+            });
+          },
         },
       );
     },
@@ -182,6 +199,9 @@ const DoctorApplyForm = () => {
                   <Field data-invalid={isInvalid}>
                     <FieldLabel htmlFor={field.name}>
                       Practice address
+                      <span className="font-normal text-muted-foreground">
+                        (optional)
+                      </span>
                     </FieldLabel>
                     <Input
                       id={field.name}
@@ -315,6 +335,9 @@ const DoctorApplyForm = () => {
                   <Field data-invalid={isInvalid}>
                     <FieldLabel htmlFor={field.name}>
                       Consultation fee (BDT)
+                      <span className="font-normal text-muted-foreground">
+                        (optional)
+                      </span>
                     </FieldLabel>
                     <Input
                       id={field.name}
@@ -400,14 +423,6 @@ const DoctorApplyForm = () => {
                       onChange={(e) => {
                         const selected = e.target.files?.[0] ?? null;
 
-                        if (
-                          selected &&
-                          (!isAcceptedFileSize(selected.size) ||
-                            !isAcceptedFileType(selected?.type))
-                        ) {
-                          field.handleBlur();
-                          return;
-                        }
                         field.handleChange(selected);
                         e.target.value = "";
                       }}
@@ -478,19 +493,9 @@ const DoctorApplyForm = () => {
                         if (incoming.length === 0) {
                           return;
                         }
-                        const invalid = incoming.some(
-                          (file) =>
-                            !isAcceptedFileSize(file.size) ||
-                            !isAcceptedFileType(file.type),
-                        );
-
-                        if (invalid) {
-                          field.handleBlur();
-                          e.target.value = "";
-                          return;
-                        }
 
                         field.handleChange([...files, ...incoming]);
+                        e.target.value = "";
                       }}
                     />
                     {files.length > 0 && (
@@ -543,7 +548,9 @@ const DoctorApplyForm = () => {
         </FieldGroup>
 
         <div className="flex justify-end w-full mt-5">
-          <Button type="submit">{"Submit"}</Button>
+          <Button disabled={applyPending} type="submit">
+            {applyPending ? <Spinner /> : "Submit"}
+          </Button>
         </div>
       </form>
 

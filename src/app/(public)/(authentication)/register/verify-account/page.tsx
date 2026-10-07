@@ -17,7 +17,7 @@ export default function VerifyAccountPage() {
         <div className="flex flex-1 items-center justify-center">
           <div className="w-full max-w-xs">
             <Suspense fallback={<p>Loading...</p>}>
-              <VerifyAccountForm />
+              <VerifyAccountForm mode="patient" />
             </Suspense>
           </div>
         </div>
