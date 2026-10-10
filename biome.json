@@ -22,7 +22,15 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true
+      "recommended": true,
+      "a11y": {
+        "useValidAriaRole": {
+          "level": "error",
+          "options": {
+            "ignoreNonDom": true
+          }
+        }
+      }
     },
     "domains": {
       "next": "recommended",

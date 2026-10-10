@@ -9,7 +9,7 @@ export const doctorRoutes = [
       },
       {
         title: "Create Shedule",
-        url: `${prefix}`,
+        url: `${prefix}/schedules`,
       },
     ],
   },
@@ -23,7 +23,6 @@ export const doctorRoutes = [
       {
         title: "Data Fetching",
         url: "#",
-
       },
     ],
   },

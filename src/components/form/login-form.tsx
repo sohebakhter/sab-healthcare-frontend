@@ -25,9 +25,13 @@ const LoginForm = () => {
 
   const form = useForm({
     defaultValues: {
-      email: "testeradmin@gmail.com",
-      password: "Tester@admin123",
+      email: "dr.soheb3@example.com",
+      password: "1VDTeVbf$3bI",
     },
+    // defaultValues: {
+    //   email: "testeradmin@gmail.com",
+    //   password: "Tester@admin123",
+    // },
     validators: {
       onSubmit: loginSchema,
     },
