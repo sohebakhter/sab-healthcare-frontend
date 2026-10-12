@@ -6,6 +6,8 @@ import {
   DoctorApplicationPayload,
   DoctorParams,
   IVerifyAccountPayload,
+  PublicDoctorParams,
+  PublicDoctorProfile,
 } from "@/types";
 
 export const applyAsDoctor = (payload: DoctorApplicationPayload) => {
@@ -39,4 +41,26 @@ export const approveDoctor = (payload: ApproveDoctorPayload) => {
     method: "POST",
     body: payload,
   });
+};
+
+export const getAllPublicDoctors = (params: PublicDoctorParams) => {
+  return apiClient<ApiResponse<PublicDoctorProfile[]>>(
+    "/doctor/public/all-doctors",
+    {
+      params,
+    },
+  );
+};
+export const getPublicDoctorProfile = (doctorId: string) => {
+  return apiClient<ApiResponse<PublicDoctorProfile>>(
+    `/doctor/public/${doctorId}`,
+  );
+};
+
+export const getTodayScheduleByDoctor = (params: {
+  doctorId?: string;
+  page?: number;
+  limit?: number;
+}) => {
+  return apiClient(`/schedule/todays-schedule`, { params });
 };

@@ -2,9 +2,12 @@ import {
   applyAsDoctor,
   approveDoctor,
   getAllDoctors,
+  getAllPublicDoctors,
+  getPublicDoctorProfile,
+  getTodayScheduleByDoctor,
   verifyDoctorAccount,
 } from "@/api";
-import { DoctorParams } from "@/types";
+import { DoctorParams, PublicDoctorParams } from "@/types";
 import {
   useMutation,
   useQuery,
@@ -28,6 +31,24 @@ export const useGetAllDocotors = (params: DoctorParams) => {
     queryFn: () => getAllDoctors(params),
   });
 };
+export const useGetPublicDoctors = (params: PublicDoctorParams) => {
+  return useQuery({
+    queryKey: ["public-doctors", params],
+    queryFn: () => getAllPublicDoctors(params),
+  });
+};
+export const usePublicDoctorProfile = (doctorId: string) => {
+  return useQuery({
+    queryKey: ["public-doctor-profile", doctorId],
+    queryFn: () => getPublicDoctorProfile(doctorId),
+  });
+};
+export const useSuspenseGetPublicDoctors = (params: PublicDoctorParams) => {
+  return useSuspenseQuery({
+    queryKey: ["public-doctors", params],
+    queryFn: () => getAllPublicDoctors(params),
+  });
+};
 export const useSuspenseGetAllDocotors = (params: DoctorParams) => {
   return useSuspenseQuery({
     queryKey: ["doctors", params],
@@ -42,5 +63,16 @@ export const useApproveDoctor = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["doctors"] });
     },
+  });
+};
+
+export const useGetTodayScheduleByDoctor = (params: {
+  doctorId?: string;
+  page?: number;
+  limit?: number;
+}) => {
+  return useQuery({
+    queryKey: ["schedule", params],
+    queryFn: () => getTodayScheduleByDoctor(params),
   });
 };
