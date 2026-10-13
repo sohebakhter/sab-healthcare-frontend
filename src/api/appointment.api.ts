@@ -3,6 +3,7 @@ import {
   ApiResponse,
   BookAppointmentPayload,
   BookAppointmentResponse,
+  PublicDoctorProfile,
 } from "@/types";
 
 export const bookAppointment = (payload: BookAppointmentPayload) => {
@@ -15,7 +16,9 @@ export const bookAppointment = (payload: BookAppointmentPayload) => {
   );
 };
 export const myAppointments = (params: { page: number; limit: number }) => {
-  return apiClient("/appointment/my-appointments", {
+  return apiClient<
+    ApiResponse<{ doctor: PublicDoctorProfile; status: string; id: string }[]>
+  >("/appointment/my-appointments", {
     params,
   });
 };

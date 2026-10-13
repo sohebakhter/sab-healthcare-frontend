@@ -9,7 +9,7 @@ const AppointmentList = () => {
   const status = params.get("status");
   const { data } = useMyAppointments({ page: 1, limit: 100 });
 
-  const appointments = data?.data?.data || [];
+  const appointments = data?.data || [];
 
   if (status === "success") {
     return (
